@@ -1,0 +1,29 @@
+.form-group {
+    margin-bottom: 0;
+}
+
+.accordion-body {
+    padding: 0.5rem;
+}
+
+.accordion-button {
+    padding: 0.5rem;
+}
+
+.card-menu-item {
+    padding-left: 1rem;
+}
+
+.nav {
+    --bs-nav-link-padding-y: 0;
+}
+
+.dropdown-header {
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.dropdown-divider {
+    margin: 0;
+}
