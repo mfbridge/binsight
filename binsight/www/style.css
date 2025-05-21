@@ -27,3 +27,58 @@
 .dropdown-divider {
     margin: 0;
 }
+
+.hrtext {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #a0a0a0;
+}
+
+.hrtext::before,
+.hrtext::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #a0a0a0;
+}
+
+.hrtext:not(:empty)::before {
+  margin-right: .25em;
+}
+
+.hrtext:not(:empty)::after {
+  margin-left: .25em;
+}
+
+.jexcel { /* move excel tables behind virtual dropdowns */
+    z-index: 1;
+    position: relative;
+}
+
+
+#accordion1 .accordion-button {
+    --bs-accordion-active-bg: #d3f5d9;
+
+}
+
+#accordion2 .accordion-button {
+    --bs-accordion-active-bg: #f5ddc6;
+
+}
+
+#accordion3 .accordion-button {
+    --bs-accordion-active-bg: #c6cdf5;
+}
+
+.vscomp-toggle-button {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.vscomp-wrapper {
+    font-size: unset;
+}
+
+.ace_gutter {
+    z-index: unset !important;
+}

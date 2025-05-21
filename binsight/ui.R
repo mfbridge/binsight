@@ -18,7 +18,7 @@ ui = tagList(
             code_font = font_collection(
                 "mono"
             ),
-            font_scale = 1.0,
+            font_scale = 0.8,
         ) |>
         bs_add_variables(`popover-border-radius`= "0") |>
         bs_add_variables(`navbar-padding-y`= "0") |>
@@ -48,23 +48,34 @@ ui = tagList(
                         actionButton("final_view", "View data in RStudio", width = "100%"),
                         actionButton("temp_view", "View temp in RStudio", width = "100%")
                     ),
-                    accordion(id = "step1_accordion", multiple = T, open = T,
-                        accordion_panel(title = HTML("<b>1 &mdash; Import</b>"),
+                    accordion(multiple = T, open = c("csv"), id = "accordion1",
+                        accordion_panel(title = HTML("<b>Import Comma-separated Value Files</b>"), value = "csv",
                             csv_import_ui("csv"),
                         ),
 
-                        tags$br(),
+                        accordion_panel(title = HTML("<b>Import via Metadata Excel Sheet</b>"), value = "metaxlsx",
+                            layout_columns(col_widths = c(12),
+                                fileInput("metadata_file", label = NULL, accept = ".xlsx")
+                            ),
+                            tags$div("Files", class = "hrtext"),
+                            excelOutput("metadata_table")
+                        )
+                    ),
 
-                        accordion_panel(title = HTML("<b>2 &mdash; (Optional) Pre-processing</b>"),
+                    accordion(multiple = T, open = T, id = "accordion2",
+                        accordion_panel(title = HTML("<b>(Optional) Pre-processing</b>"),
                             custom_preprocess_ui("custom1"),
                         ),
+                    ),
 
-                        tags$br(),
+                    accordion(multiple = T, open = T, id = "accordion3",
 
-                        accordion_panel(title = HTML("<b>3 &mdash; Transform</b>"),
+                        accordion_panel(title = HTML("<b>Binning/aggregation</b>"),
                             binning_ui("bin")
                         )
-                    )
+                    ),
+
+                    div(style="height:200px")
                 )
             ),
             nav_menu(
@@ -74,48 +85,49 @@ ui = tagList(
                     card(style = "font-size: 0.75rem",
                         pickerInput("preview_dataset", label = "Dataset", choices = c()),
                         DT::DTOutput("preview_table", fill = T)
-                        # card_footer(
-                        #     uiOutput(("preview_status"), inline = T)
-                        # ),
                     )
                 ),
-                nav_panel("Values across time (line, bar plots)",
+                nav_panel("Values across time (line plots)",
                     layout_sidebar(
-                        sidebar = sidebar(
-                            pickerInput("plot_type", label = "Type", choices = c("line", "bar")),
-                            checkboxInput("facet_vars", label = "Facet by Variable", value = F)
+                        sidebar = sidebar(open = F,
+                            #pickerInput("plot_type", label = "Plot Type", choices = c("line", "bar"))
                         ),
                         card(
-                            card_header(style = "display: flex;",
-                                pickerInput("plot_dataset", label = "Dataset", choices = c(), inline = T),
-                                pickerInput("plot_vars", label = "Variable(s)", choices = c(), multiple = T, inline = T)
+                            card_header(style = "padding-bottom: 0;",
+                                layout_columns(col_widths = c(3, 3, 2, 2, 2), style = "display: flex;",
+                                virtualSelectInput("plot_dataset", label = "Dataset", choices = c(), optionHeight = "24px", multiple = F),
+                                virtualSelectInput("plot_vars", label = "Variables", choices = c(), optionHeight = "24px", multiple = T),
+                                virtualSelectInput("plot_facets", label = "Facets", choices = c(), selected = NULL, optionHeight = "24px", multiple = T),
+                                virtualSelectInput("plot_ids", label = "IDs", choices = c(), optionHeight = "24px", multiple = T),
+                                virtualSelectInput("plot_groups", label = "Groups", choices = c(), optionHeight = "24px", multiple = T)
+                                )
                             ),
                             plotOutput("plot1")
                         )
                     )
                 ),
 
-                nav_panel("Values across cycles (actogram, heatmap)",
-
-                ),
+                # nav_panel("Values across cycles (actogram, heatmap)",
+                #
+                # ),
 
                 "Analysis",
-                nav_panel(tooltip("Groups (GLMM, RMANOVA)", "Comparisons across time, optionally accounting for repeated measures.", placement = "right"),
-                    layout_sidebar(
-                        sidebar = sidebar(
-                            "options go here"
-                        ),
-                        card(
-                            card_header(style = "display: flex;",
-                                pickerInput("analysis_dataset", label = "Dataset", choices = c(), inline = T),
-                                pickerInput("analysis_fixed", label = "Fixed Effect(s)", choices = c(), multiple = T, inline = T),
-                                pickerInput("analysis_random", label = "Random Effect(s)", choices = c(), multiple = T, inline = T),
-                            ),
-                            plotOutput("plot2")
-                        )
-                    )
-                ),
-                nav_panel(tooltip("Interventions (t-test, Wilcoxon)", "Comparison before and after an intervention.", placement = "right"), "test")
+                # nav_panel(tooltip("Groups (GLMM, RMANOVA)", "Comparisons across time, optionally accounting for repeated measures.", placement = "right"),
+                #     layout_sidebar(
+                #         sidebar = sidebar(
+                #             "options go here"
+                #         ),
+                #         card(
+                #             card_header(style = "display: flex;",
+                #                 pickerInput("analysis_dataset", label = "Dataset", choices = c(), inline = T),
+                #                 pickerInput("analysis_fixed", label = "Fixed Effect(s)", choices = c(), multiple = T, inline = T),
+                #                 pickerInput("analysis_random", label = "Random Effect(s)", choices = c(), multiple = T, inline = T),
+                #             ),
+                #             plotOutput("plot2")
+                #         )
+                #     )
+                # ),
+                nav_panel(tooltip(HTML("<i>t</i>&em;test, Wilcoxon signed-rank sum test"), "Simple comparisons of two populations", placement = "right"), "test")
             )
         )
     )
