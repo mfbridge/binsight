@@ -2,7 +2,6 @@ custom.example.summary = "# calculate min, mean, median, max, for each variable 
 function(data, vars, id, group) {
     byvars = c('Bin', '[Bin Start]', id, group)
     byvars = byvars[byvars != '']
-
     rdt = data[, byvars, with = F]
 
     for (v in vars) {
